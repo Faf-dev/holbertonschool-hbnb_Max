@@ -43,9 +43,9 @@ class PlaceList(Resource):
         if current_user is None or len(current_user) == 0: # modif
             return {'error': 'Invalid input data.'}, 400
 
-        user = facade.user_repo.get_by_attribute('id', current_user) # modif
+        user = facade.user_repo.get_by_attribute('id', current_user) # A MODIFIER /!\
         if not user:
-            return {'error': 'Invalid input data'}, 400
+            return {f'error': 'Invalid input data.'}, 400
         place_data['owner_id'] = current_user # ajoute l'id de l'user comme owner de la place
         try:
             new_place = facade.create_place(place_data)
