@@ -1,20 +1,19 @@
 from .basemodel import BaseModel
+from app.extensions import db, bcrypt
+import uuid
 import re
 
 class User(BaseModel):
-    emails = set()
+    __tablename__ = 'users'
 
-    def __init__(self, first_name, last_name, email, password=None, is_admin=False):
-        super().__init__()
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.__password = None
-        if password:
-            self.hash_password(password)
-        self.is_admin = is_admin
-        self.places = []
-        self.reviews = []
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+
+    #  self.places = []
+    #  self.reviews = []
     
     @property
     def first_name(self):
@@ -48,12 +47,7 @@ class User(BaseModel):
             raise TypeError("Email must be a string")
         if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
             raise ValueError("Invalid email format")
-        if value in User.emails:
-            raise ValueError("Email already exists")
-        if hasattr(self, "_User__email"):
-            User.emails.discard(self.__email)
         self.__email = value
-        User.emails.add(value)
 
     def hash_password(self, password):
         """
