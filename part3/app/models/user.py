@@ -14,40 +14,6 @@ class User(BaseModel):
 
     #  self.places = []
     #  self.reviews = []
-    
-    @property
-    def first_name(self):
-        return self.__first_name
-    
-    @first_name.setter
-    def first_name(self, value):
-        if not isinstance(value, str):
-            raise TypeError("First name must be a string")
-        super().is_max_length('First name', value, 50)
-        self.__first_name = value
-
-    @property
-    def last_name(self):
-        return self.__last_name
-
-    @last_name.setter
-    def last_name(self, value):
-        if not isinstance(value, str):
-            raise TypeError("Last name must be a string")
-        super().is_max_length('Last name', value, 50)
-        self.__last_name = value
-
-    @property
-    def email(self):
-        return self.__email
-
-    @email.setter
-    def email(self, value):
-        if not isinstance(value, str):
-            raise TypeError("Email must be a string")
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
-            raise ValueError("Invalid email format")
-        self.__email = value
 
     def hash_password(self, password):
         """
