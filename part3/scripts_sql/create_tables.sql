@@ -65,8 +65,3 @@ CREATE TABLE IF NOT EXISTS `Place_Amenity` (
     FOREIGN KEY (place_id) REFERENCES Place(id) ON DELETE CASCADE,
     FOREIGN KEY (amenity_id) REFERENCES Amenity(id) ON DELETE CASCADE
 );
-
-
-
-
-
