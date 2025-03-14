@@ -1,6 +1,16 @@
 USE hbnb_db;
 
 SHOW DATABASES;
+
+-- Amenity Table
+INSERT INTO Amenity (id, name) VALUES (
+    '88e44a66-2334-46c2-8e42-172c44cbfabb',
+    'Dishwasher'
+);
+SELECT * FROM Amenity;
+UPDATE Amenity SET id='44ba1fb9-5ccc-4785-8cc8-dbe4bf429388' WHERE id='88e44a66-2334-46c2-8e42-172c44cbfabb';
+SELECT * FROM Amenity;
+
 -- USER Table
 INSERT INTO User (id, first_name, last_name, email, password, is_admin) VALUES (
     '8734e5dc-7eb8-44d8-b23c-186665fefd40',
@@ -12,6 +22,7 @@ INSERT INTO User (id, first_name, last_name, email, password, is_admin) VALUES (
 );
 SELECT * FROM User;
 
+-- Update test
 UPDATE User SET first_name='Jhon' WHERE first_name='John';
 SELECT first_name FROM User;
 
@@ -59,3 +70,6 @@ SELECT * FROM Place;
 
 DELETE FROM User WHERE first_name='Jhon';
 SELECT * FROM User;
+
+DELETE FROM Amenity WHERE id='44ba1fb9-5ccc-4785-8cc8-dbe4bf429388';
+SELECT * FROM Amenity;
