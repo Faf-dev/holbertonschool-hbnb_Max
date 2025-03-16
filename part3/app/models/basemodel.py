@@ -1,17 +1,20 @@
-from app.extensions import db
+from app import db
 import uuid
 from datetime import datetime
+from sqlalchemy.sql import func
 
 class BaseModel(db.Model):
     __abstract__ = True
 
-    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = db.Column("id", db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def save(self):
         """Update the updated_at timestamp whenever the object is modified"""
-        self.updated_at = datetime.now()
+        self.updated_at = func.now()
+        db.session.add(self)
+        db.session.commit()
 
     def update(self, data):
         """Update the attributes of the object based on the provided dictionary"""

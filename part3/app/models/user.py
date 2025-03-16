@@ -1,48 +1,42 @@
 from .basemodel import BaseModel
-from app.extensions import db
+from app import db
+from app import bcrypt
 import re
-from sqlalchemy.orm import relationship
-import uuid
-
 
 class User(BaseModel):
     __tablename__ = 'users'
 
-    id = db.Column(db.String(36), primary_key=True,
-                   default=lambda: str(uuid.uuid4()))
-    first_name = db.Column(db.String(50), nullable=False)
-    last_name = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(120), nullable=False, unique=True)
-    password = db.Column(db.String(128), nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)
-    places = relationship("Place", backref="owner", lazy=True)
-    reviews = relationship("Review", backref="user", lazy=True)
+    _first_name = db.Column("first_name", db.String(50), nullable=False)
+    _last_name = db.Column("last_name", db.String(50), nullable=False)
+    _email = db.Column("email", db.String(120), nullable=False, unique=True)
+    _password = db.Column("password", db.String(128), nullable=False)
+    _is_admin = db.Column("is_admin", db.Boolean, default=False)
 
-    """@property
+    @property
     def first_name(self):
-        return self.__first_name
+        return self._first_name
 
     @first_name.setter
     def first_name(self, value):
         if not isinstance(value, str):
             raise TypeError("First name must be a string")
         super().is_max_length('First name', value, 50)
-        self.__first_name = value
+        self._first_name = value
 
     @property
     def last_name(self):
-        return self.__last_name
-
+        return self._last_name
+    
     @last_name.setter
     def last_name(self, value):
         if not isinstance(value, str):
             raise TypeError("Last name must be a string")
         super().is_max_length('Last name', value, 50)
-        self.__last_name = value
+        self._last_name = value
 
     @property
     def email(self):
-        return self.__email
+        return self._email
 
     @email.setter
     def email(self, value):
@@ -50,59 +44,32 @@ class User(BaseModel):
             raise TypeError("Email must be a string")
         if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
             raise ValueError("Invalid email format")
-        if value in User.emails:
-            raise ValueError("Email already exists")
-        if hasattr(self, "_User__email"):
-            User.emails.discard(self.__email)
-        self.__email = value
-        User.emails.add(value)
+        self._email = value
 
     @property
     def is_admin(self):
-        return self.__is_admin
+        return self._is_admin
 
     @is_admin.setter
     def is_admin(self, value):
         if not isinstance(value, bool):
             raise TypeError("Is Admin must be a boolean")
-        self.__is_admin = value"""
+        self._is_admin = value
 
-    def hash_password(self, password):
-        """
-        Valide et hache le mot de passe avant de le stocker.
-        """
-        from app import bcrypt
-        if not password:
-            raise ValueError("Password cannot be empty.")
+    @property
+    def password(self):
+        raise AttributeError("Password is not readable")
 
-        if len(password) < 8:
-            raise ValueError("Password must be at least 8 characters long.")
+    @password.setter
+    def password(self, password):
+        self._password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-        if not re.search(r"[A-Z]", password):
-            raise ValueError("Password must contain at least\
-                one uppercase letter.")
-
-        if not re.search(r"[a-z]", password):
-            raise ValueError("Password must contain at least\
-                one lowercase letter.")
-
-        if not re.search(r"\d", password):
-            raise ValueError("Password must contain at least one number.")
-
-        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
-            raise ValueError("Password must contain at least\
-                one special character.")
-
-        #  Hachage avec bcrypt
-        self.__password = bcrypt.generate_password_hash(password).\
-            decode('utf-8')
-
+ 
     def verify_password(self, password):
         """
         Vérifie si le mot de passe fourni correspond au hachage stocké.
         """
-        from app import bcrypt
-        if not self.__password:
+        if not self._password:
             return False  # Aucun mot de passe défini
         return bcrypt.check_password_hash(self.__password, password)
 
@@ -135,3 +102,27 @@ class User(BaseModel):
             'last_name': self.last_name,
             'email': self.email
         }
+    """
+        def hash_password(self, password):
+        from app import bcrypt
+        if not password:
+            raise ValueError("Password cannot be empty.")
+
+        if len(password) < 8:
+            raise ValueError("Password must be at least 8 characters long.")
+
+        if not re.search(r"[A-Z]", password):
+            raise ValueError("Password must contain at least\
+                one uppercase letter.")
+
+        if not re.search(r"[a-z]", password):
+            raise ValueError("Password must contain at least\
+                one lowercase letter.")
+
+        if not re.search(r"\d", password):
+            raise ValueError("Password must contain at least one number.")
+
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+            raise ValueError("Password must contain at least\
+                one special character.")
+    """

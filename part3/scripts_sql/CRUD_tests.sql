@@ -21,7 +21,7 @@ INSERT INTO User (id, first_name, last_name, email, password, is_admin) VALUES (
     'John',
     'Doe',
     'john.doe@exemple.com',
-    '$2a$12$gBfD1.yGNRwwbvk2ArNvNOdxrFPKP1j8ljferprBZsBscBk8n3pE.',
+    'test',
     FALSE
 );
 SELECT * FROM User;
