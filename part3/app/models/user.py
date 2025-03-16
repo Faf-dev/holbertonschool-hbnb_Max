@@ -69,9 +69,7 @@ class User(BaseModel):
         """
         Vérifie si le mot de passe fourni correspond au hachage stocké.
         """
-        if not self._password:
-            return False  # Aucun mot de passe défini
-        return bcrypt.check_password_hash(self.__password, password)
+        return bcrypt.check_password_hash(self._password, password)
 
     #  --- Méthodes annexes ---
     def add_place(self, place):
@@ -102,27 +100,3 @@ class User(BaseModel):
             'last_name': self.last_name,
             'email': self.email
         }
-    """
-        def hash_password(self, password):
-        from app import bcrypt
-        if not password:
-            raise ValueError("Password cannot be empty.")
-
-        if len(password) < 8:
-            raise ValueError("Password must be at least 8 characters long.")
-
-        if not re.search(r"[A-Z]", password):
-            raise ValueError("Password must contain at least\
-                one uppercase letter.")
-
-        if not re.search(r"[a-z]", password):
-            raise ValueError("Password must contain at least\
-                one lowercase letter.")
-
-        if not re.search(r"\d", password):
-            raise ValueError("Password must contain at least one number.")
-
-        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
-            raise ValueError("Password must contain at least\
-                one special character.")
-    """
